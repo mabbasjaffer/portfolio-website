@@ -2,26 +2,111 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* -----------------------------------------------------------------------------
+ * Design tokens
+ *
+ * Editorial palette — paper white + near-black, one warm muted accent.
+ * Three accent options ship at once; pick the active one with `data-accent`
+ * on <html>. Default is `indigo`.
+ * ---------------------------------------------------------------------------*/
+
 @theme {
+  /* Fonts */
   --font-sans:
     var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI",
     Roboto, sans-serif;
   --font-mono:
     var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Consolas,
     monospace;
-  --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-serif:
+    var(--font-serif-active), ui-serif, Georgia, Cambria, "Times New Roman",
+    Times, serif;
 
+  /* Type scale (clamp-based, fluid between mobile and desktop) */
+  --text-display: clamp(2.25rem, 4.5vw + 1rem, 4rem); /* hero */
+  --text-h1: clamp(1.875rem, 2.5vw + 1rem, 2.75rem);
+  --text-h2: clamp(1.5rem, 1.6vw + 1rem, 2rem);
+  --text-h3: 1.375rem;
+  --text-h4: 1.125rem;
+  --text-body: 1rem; /* 16px sans body */
+  --text-prose: 1.1875rem; /* 19px serif body */
+  --text-small: 0.875rem;
+  --text-meta: 0.75rem;
+
+  /* Reading widths */
+  --width-prose: 42rem; /* 672px */
+  --width-content: 75rem; /* 1200px */
+
+  /* Motion */
+  --ease-quiet: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  /* Neutrals — paper white / near black */
   --color-background: #fafaf9;
   --color-foreground: #0f0f0f;
   --color-muted: #6b7280;
+  --color-subtle: #f4f4f2;
   --color-border: #e7e5e4;
+
+  /* Accent: indigo (default) */
+  --color-accent: #3d3dbc;
+  --color-accent-foreground: #ffffff;
+  --color-accent-soft: #e7e7fa;
+
+  /* Named accents — referenced by [data-accent] selector below */
+  --color-accent-indigo: #3d3dbc;
+  --color-accent-indigo-soft: #e7e7fa;
+  --color-accent-orange: #b5400d;
+  --color-accent-orange-soft: #fbe9dc;
+  --color-accent-forest: #1e5631;
+  --color-accent-forest-soft: #dcefdf;
 }
 
+/* Dark theme overrides (next-themes "class" strategy) */
 .dark {
   --color-background: #0e0e10;
   --color-foreground: #ededed;
   --color-muted: #a1a1aa;
+  --color-subtle: #1a1a1d;
   --color-border: #27272a;
+
+  --color-accent: #a0a6ff;
+  --color-accent-foreground: #0e0e10;
+  --color-accent-soft: #1d1d3a;
+
+  --color-accent-indigo: #a0a6ff;
+  --color-accent-indigo-soft: #1d1d3a;
+  --color-accent-orange: #f08a4b;
+  --color-accent-orange-soft: #3a1f10;
+  --color-accent-forest: #7cc68a;
+  --color-accent-forest-soft: #142a18;
+}
+
+/* Accent switcher — set on <html data-accent="orange"> etc. */
+:root[data-accent="indigo"] {
+  --color-accent: var(--color-accent-indigo);
+  --color-accent-soft: var(--color-accent-indigo-soft);
+}
+:root[data-accent="orange"] {
+  --color-accent: var(--color-accent-orange);
+  --color-accent-soft: var(--color-accent-orange-soft);
+}
+:root[data-accent="forest"] {
+  --color-accent: var(--color-accent-forest);
+  --color-accent-soft: var(--color-accent-forest-soft);
+}
+
+/* Active serif — defaults to Newsreader; design system can override */
+:root {
+  --font-serif-active: var(--font-newsreader);
+}
+:root[data-serif="source"] {
+  --font-serif-active: var(--font-source-serif);
+}
+:root[data-serif="fraunces"] {
+  --font-serif-active: var(--font-fraunces);
+}
+:root[data-serif="newsreader"] {
+  --font-serif-active: var(--font-newsreader);
 }
 
 html {
@@ -33,6 +118,17 @@ html {
 
 body {
   font-family: var(--font-sans);
+}
+
+::selection {
+  background: var(--color-accent-soft);
+  color: var(--color-foreground);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: 2px;
 }
 
 @media (prefers-reduced-motion: reduce) {
